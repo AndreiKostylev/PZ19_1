@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,16 +16,17 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Переменные
+    // Переменные для списка
     ListView listView;
     Context context;
     LayoutInflater layoutInflater;
-
-    // Список пользователей
     List<User> users = new ArrayList<>();
-
-    // Адаптер для отображения
     UserListAdapter userListAdapter;
+
+    // Переменные для панели пользователя
+    FrameLayout userPanel;
+    TextView NameTextView, StateTextView, AgeTextView;
+    Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void AddUsersInList() {
-        // Добавляем тестовых пользователей
         users.add(new User("Иван", "В сети", 19));
         users.add(new User("Мария", "Не в сети", 25));
         users.add(new User("Алексей", "В сети", 22));
@@ -47,78 +49,98 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void Init() {
-        // Получаем ListView
+
         listView = findViewById(R.id.listView);
 
-        // Инициализируем контекст
-        context = this;
 
-        // Инициализируем LayoutInflater
+        context = this;
         layoutInflater = LayoutInflater.from(context);
 
-        // Инициализируем адаптер
-        userListAdapter = new UserListAdapter();
 
-        // Устанавливаем адаптер
+        userPanel = findViewById(R.id.userPanel);
+        NameTextView = findViewById(R.id.NameTextView);
+        StateTextView = findViewById(R.id.StateTextView);
+        AgeTextView = findViewById(R.id.AgeTextView);
+        backButton = findViewById(R.id.backButton);
+
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserVisibility(false);
+            }
+        });
+
+
+        userListAdapter = new UserListAdapter();
         listView.setAdapter(userListAdapter);
     }
 
-    // Внутренний класс адаптера
+    /**
+     * Управляет видимостью панели пользователя
+     * @param visible true - показать, false - скрыть
+     */
+    private void UserVisibility(boolean visible) {
+        if (visible) {
+            userPanel.setVisibility(View.VISIBLE);
+        } else {
+            userPanel.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Инициализирует панель пользователя данными
+     * @param item пользователь для отображения
+     */
+    private void InitPanel(User item) {
+        NameTextView.setText(item.getName());
+        StateTextView.setText(item.getState());
+        AgeTextView.setText("Возраст: " + item.getAge());
+        UserVisibility(true);
+    }
+
+
     private class UserListAdapter extends BaseAdapter {
 
-        /**
-         * Возвращает длину списка пользователей
-         * @return длина списка пользователей
-         */
         @Override
         public int getCount() {
             return users.size();
         }
 
-        /**
-         * Возвращает объект из списка пользователей
-         * @return объект из списка пользователей
-         */
         @Override
         public User getItem(int position) {
             return users.get(position);
         }
 
-        /**
-         * Возвращает позицию объекта в списке пользователей
-         * @return позиция объекта в списке пользователей
-         */
         @Override
         public long getItemId(int position) {
             return position;
         }
 
-        /**
-         * Создаёт отображаемый элемент списка
-         * @param position позиция
-         * @param currentView view которое будет возвращено
-         * @param parent родитель - ViewGroup
-         * @return отображаемый элемент списка
-         */
         @Override
-        public View getView(int position, View currentView, ViewGroup parent) {
-            // Пользователь из списка
+        public View getView(final int position, View currentView, ViewGroup parent) {
+
             User currentUser = getItem(position);
 
-            // "Надуваем" view разметкой "item_user"
+
             currentView = layoutInflater.inflate(R.layout.item_user, parent, false);
 
-            // Получаем NameTextView из currentView
-            TextView nameView = currentView.findViewById(R.id.NameTextView);
 
-            // Получаем StateTextView из currentView
+            TextView nameView = currentView.findViewById(R.id.NameTextView);
             TextView stateView = currentView.findViewById(R.id.StateTextView);
 
-            // Устанавливаем нужный текст
+
             nameView.setText(currentUser.getName());
             stateView.setText(currentUser.getState());
 
-            // Возвращаем отображаемый элемент списка
+
+            currentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    InitPanel(getItem(position));
+                }
+            });
+
             return currentView;
         }
     }
