@@ -15,15 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-    // Переменные для списка
     ListView listView;
     Context context;
     LayoutInflater layoutInflater;
     List<User> users = new ArrayList<>();
     UserListAdapter userListAdapter;
 
-    // Переменные для панели пользователя
+
     FrameLayout userPanel;
     TextView NameTextView, StateTextView, AgeTextView;
     Button backButton;
@@ -33,19 +31,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Добавляем пользователей в список
-        AddUsersInList();
 
-        // Инициализация
+        AddUsersInList();
         Init();
     }
 
     private void AddUsersInList() {
-        users.add(new User("Иван", "В сети", 19));
-        users.add(new User("Мария", "Не в сети", 25));
-        users.add(new User("Алексей", "В сети", 22));
-        users.add(new User("Ольга", "Занят", 30));
-        users.add(new User("Дмитрий", "В сети", 28));
+        users.add(new User("Иван", "В сети", 19, 1));
+        users.add(new User("Мария", "Не в сети", 25, 0));
+        users.add(new User("Алексей", "В сети", 22, 1));
+        users.add(new User("Ольга", "Занят", 30, 2));
+        users.add(new User("Дмитрий", "В сети", 28, 1));
+        users.add(new User("Анна", "Отошёл", 24, 2));
+        users.add(new User("Сергей", "Не в сети", 31, 0));
+        users.add(new User("Елена", "В сети", 27, 1));
     }
 
     private void Init() {
@@ -117,9 +116,9 @@ public class MainActivity extends AppCompatActivity {
             return position;
         }
 
+
         @Override
         public View getView(final int position, View currentView, ViewGroup parent) {
-
             User currentUser = getItem(position);
 
 
@@ -130,8 +129,24 @@ public class MainActivity extends AppCompatActivity {
             TextView stateView = currentView.findViewById(R.id.StateTextView);
 
 
+            FrameLayout stateRound = currentView.findViewById(R.id.StateRound);
+
+
             nameView.setText(currentUser.getName());
             stateView.setText(currentUser.getState());
+
+
+            switch (currentUser.getStateSignal()) {
+                case 0:
+                    stateRound.setBackgroundResource(R.drawable.back_offline);
+                    break;
+                case 1:
+                    stateRound.setBackgroundResource(R.drawable.back_online);
+                    break;
+                case 2:
+                    stateRound.setBackgroundResource(R.drawable.back_departed);
+                    break;
+            }
 
 
             currentView.setOnClickListener(new View.OnClickListener() {
