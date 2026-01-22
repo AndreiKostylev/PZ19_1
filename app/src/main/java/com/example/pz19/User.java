@@ -5,14 +5,16 @@ public class User {
     private String State;
     private int Age;
     private int StateSignal;
+    private int id;
+    private static int nextId = 0;
 
     public User(String name, String state, int age, int stateSignal) {
         Name = name;
         State = state;
         Age = age;
         StateSignal = stateSignal;
+        this.id = nextId++;
     }
-
 
     public String getName() {
         return Name;
@@ -44,5 +46,9 @@ public class User {
 
     public void setStateSignal(int stateSignal) {
         StateSignal = stateSignal;
+    }
+
+    public int getId() {
+        return id;
     }
 }

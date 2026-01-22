@@ -1,6 +1,7 @@
 package com.example.pz19;
 
 import android.os.Bundle;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -8,15 +9,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class UserActivity extends AppCompatActivity {
 
-
     private EditText NameEditText;
     private EditText StateEditText;
     private EditText AgeEditText;
 
-
     private Button backButton;
     private Button saveButton;
-
 
     private User activeUser;
     private int position;
@@ -33,8 +31,8 @@ public class UserActivity extends AppCompatActivity {
             activeUser = UserStaticInfo.users.get(position);
         }
 
-
         Init();
+
 
         setUserInfo();
     }
@@ -80,25 +78,26 @@ public class UserActivity extends AppCompatActivity {
             String newState = StateEditText.getText().toString();
             String newAgeStr = AgeEditText.getText().toString();
 
-
             if (!newName.isEmpty()) {
                 activeUser.setName(newName);
             }
             if (!newState.isEmpty()) {
                 activeUser.setState(newState);
             }
+
             if (!newAgeStr.isEmpty()) {
                 try {
                     int newAge = Integer.parseInt(newAgeStr);
                     activeUser.setAge(newAge);
                 } catch (NumberFormatException e) {
 
+                    activeUser.setAge(activeUser.getAge());
                 }
             }
 
             UserStaticInfo.updateUser(position, activeUser);
 
-            MainActivity.UpdateList();
+            MainActivity.UpdateListAndUserPanel(activeUser);
 
             finish();
         }

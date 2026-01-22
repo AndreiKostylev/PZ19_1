@@ -24,7 +24,9 @@ public class MainActivity extends AppCompatActivity {
 
     FrameLayout userPanel;
     TextView NameTextView, StateTextView, AgeTextView;
-    Button backButton;
+    Button backButton, editButton;
+
+    private int positionActiveUser = -1;
 
     public static UserListAdapter staticAdapter;
 
@@ -51,11 +53,22 @@ public class MainActivity extends AppCompatActivity {
         StateTextView = findViewById(R.id.StateTextView);
         AgeTextView = findViewById(R.id.AgeTextView);
         backButton = findViewById(R.id.backButton);
+        editButton = findViewById(R.id.editButton);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UserVisibility(false);
+                positionActiveUser = -1;
+            }
+        });
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (positionActiveUser != -1) {
+                    GoToUserProfile(positionActiveUser);
+                }
             }
         });
 
@@ -78,10 +91,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Инициализирует панель пользователя данными
      */
-    private void InitPanel(User item) {
+    private void InitPanel(User item, int position) {
         NameTextView.setText(item.getName());
         StateTextView.setText(item.getState());
         AgeTextView.setText("Возраст: " + item.getAge());
+        positionActiveUser = position;
         UserVisibility(true);
     }
 
@@ -96,12 +110,56 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Обновляет список
+     * Обновляет список и панель пользователя
+     */
+    public static void UpdateListAndUserPanel(User user) {
+        if (staticAdapter != null) {
+            staticAdapter.notifyDataSetChanged();
+        }
+
+        // Если есть активный пользователь, обновляем панель
+        if (MainActivity.getInstance() != null && user != null) {
+            MainActivity.getInstance().updateUserPanel(user);
+        }
+    }
+
+    /**
+     * Обновляет только список
      */
     public static void UpdateList() {
         if (staticAdapter != null) {
             staticAdapter.notifyDataSetChanged();
         }
+    }
+
+    /**
+     * Обновляет панель пользователя
+     */
+    private void updateUserPanel(User user) {
+        NameTextView.setText(user.getName());
+        StateTextView.setText(user.getState());
+        AgeTextView.setText("Возраст: " + user.getAge());
+    }
+
+    /**
+     * Получает экземпляр MainActivity
+     */
+    private static MainActivity instance;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        instance = this;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        instance = null;
+    }
+
+    public static MainActivity getInstance() {
+        return instance;
     }
 
     private class UserListAdapter extends BaseAdapter {
@@ -123,9 +181,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public View getView(final int position, View currentView, ViewGroup parent) {
-
             User currentUser = getItem(position);
-
 
             currentView = layoutInflater.inflate(R.layout.item_user, parent, false);
 
@@ -136,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
             nameView.setText(currentUser.getName());
             stateView.setText(currentUser.getState());
+
 
             switch (currentUser.getStateSignal()) {
                 case 0:
@@ -152,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
             currentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    InitPanel(getItem(position));
+                    InitPanel(getItem(position), position);
                 }
             });
 
