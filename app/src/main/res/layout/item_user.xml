@@ -4,24 +4,20 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_margin="20dp"
-        android:background="@drawable/back_smoke_round"
+        style="@style/BaseContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="12dp">
 
-
         <FrameLayout
             android:layout_width="75dp"
             android:layout_height="75dp">
-
 
             <FrameLayout
                 android:background="@drawable/back_black_round"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-
 
             <FrameLayout
                 android:id="@+id/StateRound"
@@ -30,7 +26,6 @@
                 android:layout_height="20dp"/>
 
         </FrameLayout>
-
 
         <LinearLayout
             android:layout_gravity="center_vertical"

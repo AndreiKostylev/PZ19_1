@@ -32,15 +32,22 @@
             android:layout_marginBottom="16dp"
             android:textSize="18sp"/>
 
-        <EditText
-            android:id="@+id/StateEditText"
-            android:hint="Статус"
-            android:maxLines="1"
-            android:inputType="text"
+        <FrameLayout
+            android:background="@drawable/back_smoke_round"
+            android:layout_margin="15dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:textSize="18sp"/>
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/StateTextView"
+                android:background="@android:color/transparent"
+                android:layout_margin="15dp"
+                android:inputType="textMultiLine"
+                android:hint="Статус"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </FrameLayout>
 
         <EditText
             android:id="@+id/AgeEditText"
@@ -49,7 +56,7 @@
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
             android:textSize="18sp"/>
 
     </LinearLayout>
