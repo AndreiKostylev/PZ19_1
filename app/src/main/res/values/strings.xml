@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">User Manager</string>
-    <string name="save">Сохранить</string>
-    <string name="nameHint">Имя</string>
-    <string name="stateHint">Статус</string>
-    <string name="ageHint">Возраст</string>
+    <string name="signIn">Вход</string>
+    <string name="loginHint">Логин</string>
+    <string name="passwordHint">Пароль</string>
+    <string name="goSignIn">Войти</string>
+    <string name="NullParametersMessage">Не все поля заполнены!</string>
+    <string name="wrongLoginOrPassword">Неверный логин или пароль</string>
 </resources>

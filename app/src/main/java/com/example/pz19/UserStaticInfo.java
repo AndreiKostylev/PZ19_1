@@ -4,7 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserStaticInfo {
+    public static final String USERS_SIGN_IN_INFO = "UsersSignInInfo";
+    public static final String USERS_PROFILE_INFO = "UsersProfileInfo";
+    public static final String PASSWORD = "password";
+    public static final String PROFILE_ID = "profileId";
+    public static final String NAME = "name";
+    public static final String AGE = "age";
+    public static final String STATE = "state";
 
+    public static String profileId = "";
     public static List<User> users = new ArrayList<>();
 
     public static final String POSITION = "position";
