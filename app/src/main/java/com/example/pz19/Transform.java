@@ -2,6 +2,9 @@ package com.example.pz19;
 import android.content.Context;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 
 public class Transform {
 
@@ -35,5 +38,26 @@ public class Transform {
         } else {
             Log.d("Transform", "Вибрация не поддерживается");
         }
+    }
+
+    /**
+     * НОВЫЙ МЕТОД: Проверка EditText с анимацией
+     */
+    public static boolean EditTextNoNullWithAnimation(Context context, EditText editText, int animationResId) {
+        boolean hasText = StringNoNull(editText.getText().toString());
+        if (!hasText) {
+            Animation animation = AnimationUtils.loadAnimation(context, animationResId);
+            editText.startAnimation(animation);
+            editText.setError("Это поле обязательно для заполнения");
+
+            // Короткая вибрация
+            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator != null && vibrator.hasVibrator()) {
+                vibrator.vibrate(200);
+            }
+        } else {
+            editText.setError(null);
+        }
+        return hasText;
     }
 }

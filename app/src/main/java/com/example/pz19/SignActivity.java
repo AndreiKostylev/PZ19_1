@@ -1,11 +1,12 @@
 package com.example.pz19;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -113,22 +114,43 @@ public class SignActivity extends AppCompatActivity {
         }
     }
 
+    // ========== НОВЫЙ МЕТОД: АНИМАЦИЯ ПУСТЫХ ПОЛЕЙ ==========
+    private boolean EditTextNoNullWithAnimation(EditText editText) {
+        boolean hasText = Transform.StringNoNull(editText.getText().toString());
+        if (!hasText) {
+            Animation animation = AnimationUtils.loadAnimation(SignActivity.this, R.anim.error_edit);
+            editText.startAnimation(animation);
+            editText.setError("Это поле обязательно для заполнения");
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator != null && vibrator.hasVibrator()) {
+                vibrator.vibrate(200); // Короткая вибрация
+            }
+        } else {
+            editText.setError(null);
+        }
+        return hasText;
+    }
+
     // ========== МЕТОДЫ ВХОДА ==========
 
     public void SignIn(View view) {
-        String login = getLogin();
-        String password = getPassword();
+        Log.d("SignIn", "Попытка входа");
 
-        Log.d("SignIn", "Попытка входа: " + login);
+        // Проверка полей с анимацией
+        boolean loginValid = EditTextNoNullWithAnimation(LoginTextView);
+        boolean passwordValid = EditTextNoNullWithAnimation(PasswordTextView);
 
-        // Проверка на пустые поля
-        if (!Transform.StringNoNull(login) || !Transform.StringNoNull(password)) {
-            Transform.Vibrate(this);
+        if (!loginValid || !passwordValid) {
             Toast.makeText(this,
                     getString(R.string.NullParametersMessage),
                     Toast.LENGTH_SHORT).show();
             return;
         }
+
+        String login = getLogin();
+        String password = getPassword();
+
+        Log.d("SignIn", "Попытка входа: " + login);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(UserStaticInfo.USERS_SIGN_IN_INFO);
@@ -226,25 +248,48 @@ public class SignActivity extends AppCompatActivity {
     // ========== МЕТОДЫ РЕГИСТРАЦИИ ==========
 
     public void SignUp(View view) {
-        String newLogin = getNewLogin();
-        String newPassword = getNewPassword();
-        String newName = getNewName();
-        String newState = getNewState();
-        int newAge = getNewAge();
+        Log.d("SignUp", "Попытка регистрации");
 
-        // Проверка на пустые поля
-        if (!Transform.StringNoNull(newLogin) ||
-                !Transform.StringNoNull(newPassword) ||
-                !Transform.StringNoNull(newName) ||
-                !Transform.StringNoNull(newState) ||
-                newAge <= 0) {
+        // Проверка всех полей с анимацией
+        boolean allFieldsValid = true;
 
-            Transform.Vibrate(this);
+        // Проверяем все поля и запускаем анимацию для пустых
+        if (!EditTextNoNullWithAnimation(NewLoginTextView)) allFieldsValid = false;
+        if (!EditTextNoNullWithAnimation(NewPasswordTextView)) allFieldsValid = false;
+        if (!EditTextNoNullWithAnimation(NewNameTextView)) allFieldsValid = false;
+        if (!EditTextNoNullWithAnimation(NewStateTextView)) allFieldsValid = false;
+
+        // Для возраста специальная проверка
+        String ageText = NewAgeTextView.getText().toString();
+        if (!Transform.StringNoNull(ageText)) {
+            Animation animation = AnimationUtils.loadAnimation(SignActivity.this, R.anim.error_edit);
+            NewAgeTextView.startAnimation(animation);
+            NewAgeTextView.setError("Это поле обязательно для заполнения");
+            allFieldsValid = false;
+        } else {
+            int age = Transform.parseIntOrDefault(ageText, 0);
+            if (age <= 0) {
+                Animation animation = AnimationUtils.loadAnimation(SignActivity.this, R.anim.error_edit);
+                NewAgeTextView.startAnimation(animation);
+                NewAgeTextView.setError("Возраст должен быть положительным числом");
+                allFieldsValid = false;
+            } else {
+                NewAgeTextView.setError(null);
+            }
+        }
+
+        if (!allFieldsValid) {
             Toast.makeText(this,
                     getString(R.string.fillAllFields),
                     Toast.LENGTH_SHORT).show();
             return;
         }
+
+        String newLogin = getNewLogin();
+        String newPassword = getNewPassword();
+        String newName = getNewName();
+        String newState = getNewState();
+        int newAge = getNewAge();
 
         // Проверяем, существует ли уже пользователь
         checkUserExistsAndRegister(newLogin, newPassword, newName, newState, newAge);
@@ -259,10 +304,21 @@ public class SignActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild(login)) {
-                    // Пользователь уже существует
+                    // Пользователь уже существует - показываем сообщение из string.xml
                     Toast.makeText(SignActivity.this,
                             getString(R.string.userExists),
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_LONG).show();
+
+                    // Анимация для поля логина, чтобы пользователь понял проблему
+                    Animation animation = AnimationUtils.loadAnimation(SignActivity.this, R.anim.error_edit);
+                    NewLoginTextView.startAnimation(animation);
+                    NewLoginTextView.setError("Логин уже занят");
+
+                    // Вибрация
+                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    if (vibrator != null && vibrator.hasVibrator()) {
+                        vibrator.vibrate(300);
+                    }
                 } else {
                     // Регистрируем нового пользователя
                     registerNewUser(login, password, name, state, age);

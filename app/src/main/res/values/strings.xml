@@ -18,6 +18,7 @@
     <string name="wrongLoginOrPassword">Неверный логин или пароль</string>
     <string name="registrationSuccess">Регистрация успешна!</string>
     <string name="userExists">Пользователь с таким логином уже существует</string>
+    <string name="UserExistMessage">Пользователь существует</string>
     <string name="fillAllFields">Заполните все поля!</string>
     <string name="selectUser">Выберите пользователя</string>
     <string name="ageText">Возраст:</string>
