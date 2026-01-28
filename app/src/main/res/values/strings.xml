@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Основные строки приложения -->
     <string name="app_name">User Manager</string>
+
+    <!-- Для экрана входа/регистрации -->
     <string name="signIn">Вход</string>
     <string name="loginHint">Логин</string>
     <string name="passwordHint">Пароль</string>
     <string name="goSignIn">Войти</string>
+    <string name="goSignUp">Зарегистрироваться</string>
+    <string name="nameHint">Имя</string>
+    <string name="ageHint">Возраст</string>
+    <string name="stateHint">Статус</string>
+
+    <!-- Сообщения -->
     <string name="NullParametersMessage">Не все поля заполнены!</string>
     <string name="wrongLoginOrPassword">Неверный логин или пароль</string>
+    <string name="registrationSuccess">Регистрация успешна!</string>
+    <string name="userExists">Пользователь с таким логином уже существует</string>
+    <string name="fillAllFields">Заполните все поля!</string>
+    <string name="selectUser">Выберите пользователя</string>
+    <string name="ageText">Возраст:</string>
+
+    <!-- Для главного экрана -->
+    <string name="title_main">Пользователи</string>
+    <string name="hint_search">Поиск...</string>
+    <string name="edit">Редактировать</string>
+    <string name="back">Назад</string>
+
+    <!-- Для экрана редактирования -->
+    <string name="edit_user">Редактирование пользователя</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
 </resources>
